@@ -1,5 +1,5 @@
 """
-  Testa para os models
+  Teste para os models
 """
 
 from django.test import TestCase
@@ -37,3 +37,8 @@ class ModelTests(TestCase):
         for email, expected in sample_emails:
             user = get_user_model().objects.create_user(email, 'test123')
             self.assertEqual(user.email, expected)
+
+    def test_new_user_without_email_raises_error(self):
+        """Teste de usuário sem e-mail raises ValueError"""
+        with self.assertRaises(ValueError):
+            get_user_model().objects.create_user('', 'test123')

@@ -11,6 +11,9 @@ class UserManager(BaseUserManager):
 
     def create_user(self, email, password=None, **extra_fields):
         """Cria, salava e retorna novo usuário"""
+        if not email:
+            raise ValueError('ERRO: Usuário precisa ter um E-mail!')
+
         user = self.model(email=self.normalize_email(
             email).lower(), **extra_fields)
         user.set_password(password)
