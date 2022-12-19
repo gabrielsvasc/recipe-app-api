@@ -259,3 +259,44 @@ class PrivateRecipeAPITests(TestCase):
                 user=self.user
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_tag_on_update(self):
+        """Testa a criação de Tag durante Update na receita."""
+        _recipe = create_recipe(user=self.user)
+
+        _payload = {'tags': [{'name': 'Brasileira'}]}
+        url = detail_url(_recipe.id)
+        res = self.client.patch(url, _payload, format='json')
+        _new_tag = Tag.objects.get(user=self.user, name='Brasileira')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(_new_tag, _recipe.tags.all())
+
+    def test_update_recipe_assign_tag(self):
+        """Testa a vinculação de Tags no Update da receita."""
+        _tag_brekfast = Tag.objects.create(
+            user=self.user, name='Café da Manhã')
+        _tag_lunch = Tag.objects.create(user=self.user, name='Lanche')
+        _recipe = create_recipe(user=self.user)
+        _recipe.tags.add(_tag_brekfast)
+
+        _payload = {'tags': [{'name': 'Lanche'}]}
+        url = detail_url(_recipe.id)
+        res = self.client.patch(url, _payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(_tag_lunch, _recipe.tags.all())
+        self.assertNotIn(_tag_brekfast, _recipe.tags.all())
+
+    def test_clear_recipe_tags(self):
+        """Testa a remoção de todas as tags de uma receita."""
+        _tag = Tag.objects.create(user=self.user, name='Brasileira')
+        _recipe = create_recipe(user=self.user)
+        _recipe.tags.add(_tag)
+
+        _payload = {'tags': []}
+        url = detail_url(_recipe.id)
+        res = self.client.patch(url, _payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(_recipe.tags.count(), 0)
