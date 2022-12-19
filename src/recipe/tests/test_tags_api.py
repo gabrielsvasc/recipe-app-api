@@ -71,7 +71,7 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.data[0]['id'], tag.id)
 
     def test_update_tag(self):
-        """Testa a atualizaçõ de uma tag."""
+        """Testa a atualização do nome de uma tag."""
         tag = Tag.objects.create(user=self.user, name='Dinner')
 
         payload = {
@@ -83,3 +83,14 @@ class PrivateTagsApiTests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         tag.refresh_from_db()
         self.assertEqual(tag.name, payload['name'])
+
+    def test_delete_tag(self):
+        """Testa o delete de uma tag existente."""
+        tag = Tag.objects.create(user=self.user, name='Delete Tag')
+
+        url = detail_url(tag.id)
+        res = self.client.delete(url)
+        tags = Tag.objects.filter(user=self.user)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(tags.exists())
