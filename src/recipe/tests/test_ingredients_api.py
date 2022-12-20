@@ -13,6 +13,11 @@ from recipe.serializers import IngredientSerializer
 INGREDIENTS_URL = reverse('recipe:ingredient-list')
 
 
+def detail_url(ingredient_id):
+    """Cria e retorna uma url de ingrediente detalhada."""
+    return reverse('recipe:ingredient-detail', args=[ingredient_id])
+
+
 def create_user(email='user@example.com', password='testpass123'):
     """Cria e retorna um novo usuário."""
 
@@ -73,3 +78,26 @@ class PrivateIngredientsApiTests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['name'], ingredient.name)
         self.assertEqual(res.data[0]['id'], ingredient.id)
+
+    def test_update_ingredient(self):
+        """Testa a atualização do nome de um ingrediente."""
+        _ingredient = create_ingredient(user=self.user, name='Sal')
+        payload = {'name': 'Pimenta'}
+
+        url = detail_url(_ingredient.id)
+        res = self.client.patch(url, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        _ingredient.refresh_from_db()
+        self.assertEqual(_ingredient.name, payload['name'])
+
+    def test_delete_tag(self):
+        """Testa o delete de um ingrediente existente."""
+        _ingredient = create_ingredient(user=self.user, name='Sal')
+
+        url = detail_url(_ingredient.id)
+        res = self.client.delete(url)
+        _ingredients = Ingredient.objects.filter(user=self.user)
+
+        self.assertEqual(res.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(_ingredients.exists())
