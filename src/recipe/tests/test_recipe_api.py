@@ -353,3 +353,47 @@ class PrivateRecipeAPITests(TestCase):
                 user=self.user
             ).exists()
             self.assertTrue(exists)
+
+    def test_create_ingredient_on_update(self):
+        """Testa a criação de ingrediente durante Update na receita."""
+        _recipe = create_recipe(user=self.user)
+        _payload = {'ingredients': [{'name': 'Sal'}]}
+        url = detail_url(_recipe.id)
+
+        res = self.client.patch(url, _payload, format='json')
+        _new_ingredient = Ingredient.objects.get(
+            user=self.user, name='Sal')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(_new_ingredient, _recipe.ingredients.all())
+
+    def test_update_recipe_assign_ingredient(self):
+        """Testa a vinculação de ingredientes no Update da receita."""
+        _ingredient_sault = Ingredient.objects.create(
+            user=self.user, name='Sal')
+        _ingredient_pepper = Ingredient.objects.create(
+            user=self.user, name='Pimenta')
+        _recipe = create_recipe(user=self.user)
+        _recipe.ingredients.add(_ingredient_sault)
+
+        _payload = {'ingredients': [{'name': 'Sal'}]}
+        url = detail_url(_recipe.id)
+        res = self.client.patch(url, _payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertIn(_ingredient_sault, _recipe.ingredients.all())
+        self.assertNotIn(_ingredient_pepper, _recipe.ingredients.all())
+
+    def test_clear_recipe_tags(self):
+        """Testa a remoção de todos os ingredientes de uma receita."""
+        _ingredient = Ingredient.objects.create(
+            user=self.user, name='Sal')
+        _recipe = create_recipe(user=self.user)
+        _recipe.ingredients.add(_ingredient)
+
+        _payload = {'ingredients': []}
+        url = detail_url(_recipe.id)
+        res = self.client.patch(url, _payload, format='json')
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(_recipe.ingredients.count(), 0)
