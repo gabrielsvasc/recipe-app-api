@@ -31,7 +31,7 @@ def detail_url(recipe_id):
 
 def image_upload_url(recipe_id):
     """Cria e retorna uma URL de upload para uma imagem."""
-    return reverse('recipe:recipe-detail', args=[recipe_id])
+    return reverse('recipe:recipe-upload-image', args=[recipe_id])
 
 
 def create_recipe(user, **params):
@@ -416,7 +416,7 @@ class ImageUploadTests(TestCase):
         self.client = APIClient()
         self.user = get_user_model().objects.create_user(
             'user@test.com',
-            'pass@123'
+            'password@123'
         )
         self.client.force_authenticate(self.user)
         self.recipe = create_recipe(user=self.user)
