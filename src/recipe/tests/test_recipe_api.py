@@ -407,6 +407,52 @@ class PrivateRecipeAPITests(TestCase):
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(_recipe.ingredients.count(), 0)
 
+    def test_filter_by_tags(self):
+        """Testa a filtragem de receitas pela tag."""
+        r1 = create_recipe(user=self.user, title='Arroz')
+        r2 = create_recipe(user=self.user, title='Feijao')
+        r3 = create_recipe(user=self.user, title='Macarrão')
+
+        tag1 = Tag.objects.create(user=self.user, name='Almoço')
+        tag2 = Tag.objects.create(user=self.user, name='Jantar')
+
+        r1.tags.add(tag1)
+        r2.tags.add(tag2)
+
+        params = {'tags': f'{tag1.id}, {tag2.id}'}
+        res = self.client.get(RECIPES_URL, params)
+
+        s1 = RecipeSerializer(r1)
+        s2 = RecipeSerializer(r2)
+        s3 = RecipeSerializer(r3)
+
+        self.assertIn(s1.data, res.data)
+        self.assertIn(s2.data, res.data)
+        self.assertNotIn(s3.data, res.data)
+
+    def test_filter_by_ingredients(self):
+        """Testa a filtragem de receitas por ingredientes."""
+        r1 = create_recipe(user=self.user, title='Arroz')
+        r2 = create_recipe(user=self.user, title='Feijao')
+        r3 = create_recipe(user=self.user, title='Macarrão')
+
+        ingredient1 = Ingredient.objects.create(user=self.user, name='Sal')
+        ingredient2 = Ingredient.objects.create(user=self.user, name='Pimenta')
+
+        r1.ingredients.add(ingredient1)
+        r2.ingredients.add(ingredient2)
+
+        params = {'ingredients': f'{ingredient1.id}, {ingredient2.id}'}
+        res = self.client.get(RECIPES_URL, params)
+
+        s1 = RecipeSerializer(r1)
+        s2 = RecipeSerializer(r2)
+        s3 = RecipeSerializer(r3)
+
+        self.assertIn(s1.data, res.data)
+        self.assertIn(s2.data, res.data)
+        self.assertNotIn(s3.data, res.data)
+
 
 class ImageUploadTests(TestCase):
     """Testes para o upload de imagens na API."""
