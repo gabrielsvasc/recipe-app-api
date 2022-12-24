@@ -1,7 +1,6 @@
 """Testa a rota de receita da API."""
 
 import tempfile
-import os
 
 from decimal import Decimal
 from PIL import Image
