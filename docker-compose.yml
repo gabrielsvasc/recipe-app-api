@@ -21,6 +21,7 @@ services:
       - DB_NAME=devdb
       - DB_USER=devuser
       - DB_PASS=my-secret-123
+      - DEBUG=1
     depends_on:
       - db
 
