@@ -1,6 +1,13 @@
 # API de Receitas
 
-Simple overview of use/purpose.
+App utilizado para o fluxo completo de receitas.
+
+### Stack
+
+Este projeto utiliza a linguagem Python, com a estrutura do Django em conjunto da biblioteca Django REST Framework (DRF).
+
+![Python](https://img.shields.io/badge/Python-20232A?style=for-the-badge&logo=python&logoColor=306896)
+![Django](https://img.shields.io/badge/Django-20232A?style=for-the-badge&logo=django&logoColor=ffffff)
 
 ## Description
 
