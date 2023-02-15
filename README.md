@@ -11,7 +11,7 @@ Este projeto utiliza a linguagem Python, com a estrutura do Django em conjunto d
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+Os recursos desta API permitem criar receitas, associar tags, criar, ingredientes e filtrar informações, tudo isso de forma simplificada e segura, utilizando Tokens em todas as rotas de POST, PATCH, PUT e DELETE.
 
 ## Getting Started
 
@@ -61,12 +61,10 @@ ex. [@DomPizzie](https://twitter.com/dompizzie)
 
 This project is licensed under the [NAME HERE] License - see the LICENSE.md file for details
 
-## Acknowledgments
+## Docs
 
-Inspiration, code snippets, etc.
+Fontes utilizadas neste repositório.
 
-- [awesome-readme](https://github.com/matiassingers/awesome-readme)
-- [PurpleBooth](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2)
-- [dbader](https://github.com/dbader/readme-template)
-- [zenorocha](https://gist.github.com/zenorocha/4526327)
-- [fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46)
+- [Django](https://docs.djangoproject.com/en/4.1/)
+- [Django REST Framework](https://www.django-rest-framework.org/#development)
+- [Udemy](https://itau.udemy.com/course/django-python-advanced/learn/lecture/32236722?start=60#reviews)
